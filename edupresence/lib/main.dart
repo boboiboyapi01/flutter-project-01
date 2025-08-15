@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Login',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.grey[200],
+        scaffoldBackgroundColor: const Color.fromRGBO(9, 52, 67, 1), 
       ),
       home: const LoginPage(),
     );

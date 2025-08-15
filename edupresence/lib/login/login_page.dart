@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: const Color.fromRGBO(9, 52, 67, 1),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -25,9 +25,14 @@ class _LoginPageState extends State<LoginPage> {
               // const Icon(Icons.face_retouching_natural,
               //     size: 80, color: Colors.blue),
               // const SizedBox(height: 20),
-              const Text(
+              Text(
                 "Welcome to EduPresence",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Bahnschrift',
+                  color: Color.fromRGBO(21, 218, 218, 1),
+                ),
               ),
               const SizedBox(height: 30),
 
