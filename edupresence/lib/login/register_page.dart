@@ -16,7 +16,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF003640), // warna background sesuai desain
+      backgroundColor: const Color(
+        0xFF003640,
+      ), // warna background sesuai desain
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -27,11 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 40),
                 const Text(
                   "Daftar Akun",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.cyanAccent,
-                  ),
+                  style: TextStyle(fontSize: 32, color: Colors.cyanAccent),
                 ),
                 const SizedBox(height: 30),
 
@@ -43,7 +41,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 16),
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,
@@ -61,7 +61,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 16),
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,
@@ -79,7 +81,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 16),
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,
@@ -105,8 +109,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     child: const Text(
                       "BUAT AKUN",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -125,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         Navigator.pop(context);
                       },
                       child: const Text(
-                        "Login akun",
+                        "Login",
                         style: TextStyle(color: Colors.cyanAccent),
                       ),
                     ),

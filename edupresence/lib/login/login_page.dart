@@ -24,11 +24,7 @@ class LoginPage extends StatelessWidget {
                 const Text(
                   'Selamat datang di\nEduPresence',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color.fromRGBO(21, 218, 218, 1),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.cyanAccent, fontSize: 32),
                 ),
                 const SizedBox(height: 30),
 
@@ -40,7 +36,7 @@ class LoginPage extends StatelessWidget {
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 8,
-                      horizontal: 16,
+                      horizontal: 32,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -59,7 +55,7 @@ class LoginPage extends StatelessWidget {
                     fillColor: Colors.white,
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 8,
-                      horizontal: 16,
+                      horizontal: 32,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -72,6 +68,7 @@ class LoginPage extends StatelessWidget {
                 // Login button
                 SizedBox(
                   width: double.infinity,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.cyanAccent,
@@ -93,7 +90,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
 
                 // Daftar akun link
                 Row(
@@ -101,7 +98,7 @@ class LoginPage extends StatelessWidget {
                   children: [
                     const Text(
                       "Belum punya akun?",
-                      style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                      style: TextStyle(color: Colors.white),
                     ),
                     TextButton(
                       onPressed: () {
@@ -114,9 +111,7 @@ class LoginPage extends StatelessWidget {
                       },
                       child: const Text(
                         "Daftar",
-                        style: TextStyle(
-                          color: Color.fromRGBO(21, 218, 218, 1),
-                        ),
+                        style: TextStyle(color: Colors.cyanAccent),
                       ),
                     ),
                   ],
