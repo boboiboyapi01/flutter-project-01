@@ -1,49 +1,72 @@
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 class MLHelper {
-  Interpreter? _interpreter;
+  late Interpreter _interpreter;
+  late List<int> _inputShape;
+  late List<int> _outputShape;
 
-  /// Load TFLite model
-  Future<void> loadModel({String modelPath = 'assets/models/face_model.tflite'}) async {
+  MLHelper(String modelPath) {
+    _loadModel(modelPath);
+  }
+
+  /// Load model TFLite
+  Future<void> _loadModel(String modelPath) async {
     try {
       _interpreter = await Interpreter.fromAsset(modelPath);
-      print("✅ Model loaded: $modelPath");
+      _inputShape = _interpreter.getInputTensor(0).shape;
+      _outputShape = _interpreter.getOutputTensor(0).shape;
+      print("Model loaded: input=$_inputShape, output=$_outputShape");
     } catch (e) {
-      print("❌ Failed to load model: $e");
+      print("Error while loading model: $e");
     }
   }
 
-  /// Convert image bytes (Uint8List) to Float32 tensor (simple normalization)
-  TensorBuffer imageToTensor(Uint8List imageData, {int inputSize = 112}) {
-    // NOTE: di sini kamu bisa pakai library image (package:image)
-    // untuk resize dan convert ke RGB
-    // supaya hasilnya [inputSize, inputSize, 3]
+  /// Preprocess: convert image -> Float32 input tensor
+  TensorImage _preprocess(img.Image image) {
+    final inputSize = _inputShape[1]; // biasanya [1, 224, 224, 3]
+    final resized = img.copyResize(image, width: inputSize, height: inputSize);
 
-    // sementara dummy buffer (1D) biar gampang dulu
-    List<double> normalized = imageData.map((e) => e / 255.0).toList();
+    var buffer = Float32List(inputSize * inputSize * 3).buffer;
+    var byteData = buffer.asFloat32List();
 
-    return TensorBuffer.createFixedSize([1, inputSize, inputSize, 3], TfLiteType.float32)
-      ..loadList(normalized, shape: [1, inputSize, inputSize, 3]);
-  }
-
-  /// Run inference dan return embedding
-  List<double> runEmbedding(TensorBuffer inputBuffer, {int embeddingSize = 192}) {
-    if (_interpreter == null) {
-      throw Exception("Interpreter not initialized. Call loadModel() first.");
+    int index = 0;
+    for (int y = 0; y < inputSize; y++) {
+      for (int x = 0; x < inputSize; x++) {
+        final pixel = resized.getPixel(x, y);
+        byteData[index++] = (img.getRed(pixel) / 255.0);
+        byteData[index++] = (img.getGreen(pixel) / 255.0);
+        byteData[index++] = (img.getBlue(pixel) / 255.0);
+      }
     }
 
-    // Prepare output buffer
-    TensorBuffer outputBuffer = TensorBuffer.createFixedSize([1, embeddingSize], TfLiteType.float32);
-
-    // Run inference
-    _interpreter!.run(inputBuffer.buffer, outputBuffer.buffer);
-
-    return outputBuffer.getDoubleList();
+    return TensorImage(byteData, _inputShape);
   }
 
+  /// Jalankan inference
+  Future<List<double>> runInference(img.Image image) async {
+    final inputTensor = _preprocess(image);
+
+    // Buat buffer input & output
+    var input = inputTensor.buffer;
+    var output = List.filled(_outputShape.reduce((a, b) => a * b), 0).reshape(_outputShape);
+
+    _interpreter.run(input, output);
+
+    return output.reshape([output.length]).cast<double>();
+  }
+
+  /// Release resources
   void close() {
-    _interpreter?.close();
+    _interpreter.close();
   }
 }
 
+/// Helper untuk bungkus data tensor
+class TensorImage {
+  final Float32List buffer;
+  final List<int> shape;
+  TensorImage(this.buffer, this.shape);
+}

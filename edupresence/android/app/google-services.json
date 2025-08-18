@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1087988034819",
+    "firebase_url": "https://edupresence-4d9fd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "edupresence-4d9fd",
+    "storage_bucket": "edupresence-4d9fd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1087988034819:android:66baa0baed75d4a81e4d36",
+        "android_client_info": {
+          "package_name": "com.example.edupresence"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA0kHX5XH8CoFqz0yeCS4EXHExTYEQJSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
