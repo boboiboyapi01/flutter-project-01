@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:edupresence/face-recognition/face_embedding_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -104,8 +106,90 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    onPressed: () {
-                      // TODO: Proses register
+                    onPressed: () async {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+                      final passwordConfirm = passwordConfirmationController
+                          .text
+                          .trim();
+
+                      // Validasi password minimal 6 karakter, ada huruf besar, ada angka
+                      final passwordRegex = RegExp(
+                        r'^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$',
+                      );
+                      if (!passwordRegex.hasMatch(password)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Password harus minimal 6 karakter, mengandung 1 huruf kapital dan 1 angka",
+                            ),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      // Cek apakah konfirmasi password sama
+                      if (password != passwordConfirm) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Konfirmasi password tidak sama!"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      try {
+                        // Buat akun baru di Firebase
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Registrasi berhasil! Silakan input data wajah.",
+                            ),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+
+                        // Arahkan ke FaceEmbeddingPage
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FaceEmbeddingPage(
+                              userId: FirebaseAuth.instance.currentUser!.uid,
+                            ),
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'email-already-in-use') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Email sudah terdaftar!"),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                        } else if (e.code == 'invalid-email') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Format email tidak valid!"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Terjadi kesalahan: ${e.message}"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: const Text(
                       "BUAT AKUN",

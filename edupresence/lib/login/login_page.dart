@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
+import 'package:edupresence/face-recognition/face_recognition_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _loginPage();
+}
+
+class _loginPage extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +40,7 @@ class LoginPage extends StatelessWidget {
 
                 // Email field
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     filled: true,
@@ -48,6 +59,7 @@ class LoginPage extends StatelessWidget {
 
                 // Password field
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -78,9 +90,59 @@ class LoginPage extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    onPressed: () {
-                      // TODO: Tambahkan logika login di sini
+                    onPressed: () async {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+
+                      if (email.isEmpty || password.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Email dan Password tidak boleh kosong",
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      try {
+                        // Login ke Firebase
+                        UserCredential userCredential = await FirebaseAuth
+                            .instance
+                            .signInWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+
+                        // Ambil UID user
+                        final uid = userCredential.user?.uid;
+
+                        // Arahkan ke FaceRecognitionPage setelah login berhasil
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FaceRecognitionPage(userId: uid ?? ''),
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        String message = "Login gagal, coba lagi.";
+
+                        if (e.code == 'user-not-found') {
+                          message =
+                              "Akun dengan email tersebut tidak ditemukan.";
+                        } else if (e.code == 'wrong-password') {
+                          message = "Password salah.";
+                        } else if (e.code == 'invalid-email') {
+                          message = "Format email tidak valid.";
+                        }
+
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(message)));
+                      }
                     },
+
                     child: const Text(
                       'LOGIN',
                       style: TextStyle(
